@@ -34,4 +34,28 @@ pokeApi.getPokemons = (offset = 0, limit = 20) => {
         .catch((error) => console.error(error))
 }
 
+pokeApi.getPokemonDetailById = (id) => {
+    const url = `https://pokeapi.co/api/v2/pokemon/${id}`
+
+    return fetch(url)
+        .then((response) => response.json())
+        .then((jsonBody) => {
+            const pokemonDetails =  new PokemonDetails();
+            pokemonDetails.number = id;
+            pokemonDetails.name = jsonBody.name;
+            pokemonDetails.height = jsonBody.height;
+            pokemonDetails.species = jsonBody.species.name;
+            pokemonDetails.weight = jsonBody.weight;
+            pokemonDetails.photo = jsonBody.sprites.other.dream_world.front_default
+
+            const types = jsonBody.types.map((typeSlot) => typeSlot.type.name)
+            const [type] = types
+            pokemonDetails.type = type
+            pokemonDetails.types = types
+
+            pokemonDetails.abilities = jsonBody.abilities.map((abilitySlot) => abilitySlot.ability.name)            
+            return pokemonDetails
+        })
+        .catch((error) => console.error(error))
+}
 
